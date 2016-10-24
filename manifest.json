@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+
+  "name": "Checkout.com Extension",
+  "description": "Checkout. com Chrome's utility",
+  "version": "0.1",
+
+  "icons": { "16": "icon.png",
+             "48": "icon.png",
+            "128": "icon.png" },
+
+  "content_scripts": [
+    {
+      "matches": ["http://devapi.checkout.com:8080/*"],
+      "js": ["jquery.js", "octopus.js"],
+      "run_at": "document_end"
+    }
+  ],
+
+  "permissions" : [
+    "activeTab",
+    "https://github.com/"
+  ]
+}

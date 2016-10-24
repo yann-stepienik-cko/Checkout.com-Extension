@@ -1,5 +1,21 @@
 
+// Release note cache system
+var notes = {};
+function getNotes(url) {
+  if(!notes.url) {
+    $.get(url, function( data ) {
+      var content = $($.parseHTML(data));
+      notes.url = content.find(".release-header").html() + content.find(".markdown-body").html();
+    });
+    return "Loading notes...";
+  }
+
+  return notes.url;
+}
+
+//Init method
 function init() {
+
   //get project name
   var project = window.location.hash.split("/")[window.location.hash.split("/").length - 1];
 
@@ -18,6 +34,20 @@ function init() {
         var v = $(el).find(".version").text().replace(/\s/g, "");
         var url = "https://github.com/CKOTech/"+project+"/releases/tag/"+v
 
+        //Add informations
+        var notes = getNotes(url);
+
+        $(el).on("mouseover", function(e) {
+          $('#cko-tooltip').html(getNotes(url));
+          $('#cko-tooltip').show();
+          $('#cko-tooltip').css("top", $(el).offset().top + $(el).height() + 20);
+          $('#cko-tooltip').css("left", $(el).offset().left - $('#cko-tooltip').width() / 2 + $(el).width() / 2);
+        })
+
+        $(el).on("mouseout", function(e) {
+          $('#cko-tooltip').hide();
+        })
+
         //create link
         $(el).append("<a class='release' href='"+url+"'>Release Notes</a>")
       }
@@ -26,6 +56,12 @@ function init() {
   }
 
   //We want to retry if the tab isn't populated, or start again if Octo refreshed the grid
-  setTimeout(init, 500);
+  setTimeout(init, 100);
 }
 init();
+
+// Window modal
+$("body").append("<div id='cko-tooltip'"+
+    " style='box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22); padding:30px;position:absolute;"+
+    " top:100px; left:0px; overflow : hidden; z-index:999999; min-width:300px; min-height:50px;max-width:600px; max-height:800px;border:1px silver solid; background:white; display:none;'"+
+    "></div>")

@@ -19,6 +19,16 @@ function init() {
   //get project name
   var project = window.location.hash.split("/")[window.location.hash.split("/").length - 1];
 
+  switch(project) {
+    case "gateway-api" :
+      project = "checkout-merchant-api";
+    break;
+    case "gateway-api" :
+    case "gateway-recurring-console" : 
+      project = "checkout-merchant-api";
+    break;
+  }
+
   //wait for Octo to populate the tab
   if($("progression-matrix td[id*='Env']").length > 0) {
     var temp = $("progression-matrix td[id*='Env'] a");

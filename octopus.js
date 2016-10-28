@@ -2,40 +2,55 @@
 // Release note cache system
 var notes = {};
 function getNotes(url) {
-  if(!notes.url) {
+
+  if(!notes[url]) {
     $.get(url, function( data ) {
       var content = $($.parseHTML(data));
-      notes.url = content.find(".release-header").html() + content.find(".markdown-body").html();
+      notes[url] = content.find(".release-header").html() + content.find(".markdown-body").html();
     });
     return "Loading notes...";
   }
 
-  return notes.url;
+  return notes[url];
+}
+
+function getProject(project) {
+  switch(project) {
+    case "Checkout.hub" :
+      return "checkout-hub";
+    break;
+    case "Gateway API" :
+    case "gateway-api" :
+    case "gateway-recurring-console" :
+    case "Gateway Recurring Console" :
+      return "checkout-merchant-api";
+    break;
+    default:
+      return project;
+    break;
+  }
 }
 
 //Init method
 function init() {
 
-  //get project name
-  var project = window.location.hash.split("/")[window.location.hash.split("/").length - 1];
-
-  switch(project) {
-    case "gateway-api" :
-      project = "checkout-merchant-api";
-    break;
-    case "gateway-api" :
-    case "gateway-recurring-console" : 
-      project = "checkout-merchant-api";
-    break;
-  }
-
   //wait for Octo to populate the tab
-  if($("progression-matrix td[id*='Env']").length > 0) {
-    var temp = $("progression-matrix td[id*='Env'] a");
+  if($("table td[id*='Env']").length > 0) {
+    var temp = $("table td[id*='Env']");
 
     // each packages
     temp.each(function(i) {
       var el = temp[i];
+
+      var project;
+      //get project name
+      if(window.location.hash.indexOf("projects") >= 0) {
+        project = getProject(window.location.hash.split("/")[window.location.hash.split("/").length - 1]);
+      }
+      else {
+        project = getProject($(el).parent().find("th .media-body").text());
+      }
+
 
       // exclude "deploy" button and populated versions
       if($(el).find(".version").length == 1 && $(el).find(".release").length == 0) {
@@ -48,10 +63,11 @@ function init() {
         var notes = getNotes(url);
 
         $(el).on("mouseover", function(e) {
-          $('#cko-tooltip').html(getNotes(url));
+          var _url = url+"";
+          $('#cko-tooltip').html(getNotes(_url));
           $('#cko-tooltip').show();
-          $('#cko-tooltip').css("top", $(el).offset().top + $(el).height() + 20);
-          $('#cko-tooltip').css("left", $(el).offset().left - $('#cko-tooltip').width() / 2 + $(el).width() / 2);
+          $('#cko-tooltip').css("top", $(this).offset().top + $(this).height() + 20);
+          $('#cko-tooltip').css("left", $(this).offset().left - $('#cko-tooltip').width() / 2 + $(this).width() / 2);
         })
 
         $(el).on("mouseout", function(e) {

@@ -31,6 +31,8 @@ function getProject(project) {
   }
 }
 
+var timerModal;
+
 //Init method
 function init() {
 
@@ -68,10 +70,16 @@ function init() {
           $('#cko-tooltip').show();
           $('#cko-tooltip').css("top", $(this).offset().top + $(this).height() + 20);
           $('#cko-tooltip').css("left", $(this).offset().left - $('#cko-tooltip').width() / 2 + $(this).width() / 2);
+
+          if(timerModal) clearTimeout(timerModal);
+          timerModal = setTimeout(function() {
+            $('#cko-tooltip').fadeOut();
+          }, 3000);
         })
 
         $(el).on("mouseout", function(e) {
           $('#cko-tooltip').hide();
+          if(timerModal) clearTimeout(timerModal);
         })
 
         //create link

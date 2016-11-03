@@ -83,7 +83,7 @@ function init() {
         })
 
         //create link
-        $(el).append("<a class='release' href='"+url+"'>Release Notes</a>")
+        //$(el).append("<a class='release' href='"+url+"'>Release Notes</a>")
       }
     })
 

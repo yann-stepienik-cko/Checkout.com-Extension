@@ -59,7 +59,7 @@ function init() {
 
         //extract version, create URL
         var v = $(el).find(".version").text().replace(/\s/g, "");
-        var url = "https://github.com/CKOTech/"+project+"/releases/tag/"+v
+        var url = "https://github.com/CKOTech/"+project+"/releases/tag/"+v.replace(/rc\.0+(\d)/, "rc.$1")
 
         //Add informations
         var notes = getNotes(url);
